@@ -43,6 +43,7 @@ if name.lower() == 'exit':
   if conf.lower() == 'y':
     exit()
 
+
 def listen_for_messages():
     while True:
         message = s.recv(1024).decode()
@@ -62,6 +63,7 @@ while True:
       conf = input('Are you sure? [y/n]: ')
       if conf.lower() == 'y':
         exit()
+    print ("\033[A                             \033[A")
 
 
 
