@@ -12,7 +12,7 @@ os.system(f'echo "{nl}" >> log.txt')
 os.system(f'echo "{dt_string}" >> log.txt')
 
 # server's IP address
-SERVER_HOST = "192.168.1.108"
+SERVER_HOST = "" # Enter your SERVER IP ADDRESS
 SERVER_PORT = 5002 # port we want to use
 separator_token = "<SEP>" # we will use this to separate the client name & message
 
