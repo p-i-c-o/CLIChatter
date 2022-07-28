@@ -1,8 +1,16 @@
-import socket
+import socket, os
 import random
 from threading import Thread
 from datetime import datetime
 from colorama import Fore, init, Back
+
+
+logo = """   █████╗ ██╗     ██╗     █████╗ ██╗  ██╗ █████╗ ████████╗████████╗███████╗██████╗
+  ██╔══██╗██║     ██║    ██╔══██╗██║  ██║██╔══██╗╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
+  ██║  ╚═╝██║     ██║    ██║  ╚═╝███████║███████║   ██║      ██║   █████╗  ██████╔╝
+  ██║  ██╗██║     ██║    ██║  ██╗██╔══██║██╔══██║   ██║      ██║   ██╔══╝  ██╔══██╗
+  ╚█████╔╝███████╗██║    ╚█████╔╝██║  ██║██║  ██║   ██║      ██║   ███████╗██║  ██║
+   ╚════╝ ╚══════╝╚═╝     ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝"""
 
 # init colors
 init()
@@ -16,6 +24,9 @@ colors = [Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.LIGHTBLACK_EX,
 
 # choose a random color for the client
 client_color = random.choice(colors)
+os.system('clear')
+print('\n')
+print(logo + '\n')
 
 print("To close this software, type 'exit' at any time!")
 
@@ -24,6 +35,13 @@ if SERVER_HOST.lower() == 'exit':
   conf = input('Are you sure? [y/n]: ')
   if conf.lower() == 'y':
     exit()
+
+while SERVER_HOST.isdigit() == False:
+  SERVER_HOST = input('Thats not an IP address! Try Again:    ')
+  if SERVER_HOST.lower() == 'exit':
+    conf = input('Are you sure? [y/n]: ')
+    if conf.lower() == 'y':
+      exit()
 # server's IP address
 # if the server is not on this machine,
 # put the private (network) IP address (e.g 192.168.1.2)
@@ -64,9 +82,6 @@ while True:
       if conf.lower() == 'y':
         exit()
     print ("\033[A                             \033[A")
-
-
-
 
     # a way to exit the program
     if to_send.lower() == 'q':

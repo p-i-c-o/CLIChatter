@@ -8,15 +8,14 @@ nl = '''
 '''
 
 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-
+os.system(f'echo "{nl}" >> log.txt')
 os.system(f'echo "{dt_string}" >> log.txt')
 
 # server's IP address
-SERVER_HOST = "" #IP ADDRESS
+SERVER_HOST = "192.168.1.108"
 SERVER_PORT = 5002 # port we want to use
 separator_token = "<SEP>" # we will use this to separate the client name & message
 
-clock = 0
 
 # initialize list/set of all connected client's sockets
 client_sockets = set()
@@ -36,8 +35,6 @@ def listen_for_client(cs):
     Whenever a message is received, broadcast it to all other connected clients
     """
     while True:
-        time.sleep(1)
-        clock += 1
         try:
             # keep listening for a message from `cs` socket
             msg = cs.recv(1024).decode()
@@ -49,13 +46,10 @@ def listen_for_client(cs):
         else:
             # if we received a message, replace the <SEP>
             # token with ": " for nice printing
-            if clock == 10:
-              os.system(f'echo "{nl}" >> log.txt')
             msg = msg.replace(separator_token, ": ")
             Fmsg = msg[5:]
             Fmsg = Fmsg[:-4]
             if Fmsg != '':
-              clock = 0
               os.system(f'echo "{Fmsg}" >> log.txt')
               print(msg)
 
