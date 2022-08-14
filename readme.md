@@ -1,8 +1,4 @@
-
-![imageedit_3_6068243592](https://user-images.githubusercontent.com/95228665/184546179-8ed426c5-725c-4980-844e-1606a13b2b03.png) # CLI Chatter
-
-
-
+# CLI Chatter
 
 CLI Chatter is a Python3 based chat software designed for simple use between 10 people *(or less)*.
 
