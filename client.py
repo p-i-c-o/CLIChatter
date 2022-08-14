@@ -1,5 +1,5 @@
-import socket, os
-import random
+import socket, os, random
+from cryptography.fernet import Fernet
 from threading import Thread
 from datetime import datetime
 from colorama import Fore, init, Back
@@ -19,8 +19,7 @@ init()
 colors = [Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.LIGHTBLACK_EX,
     Fore.LIGHTBLUE_EX, Fore.LIGHTCYAN_EX, Fore.LIGHTGREEN_EX,
     Fore.LIGHTMAGENTA_EX, Fore.LIGHTRED_EX, Fore.LIGHTWHITE_EX,
-    Fore.LIGHTYELLOW_EX, Fore.MAGENTA, Fore.RED, Fore.WHITE, Fore.YELLOW
-]
+    Fore.LIGHTYELLOW_EX, Fore.MAGENTA, Fore.RED, Fore.WHITE, Fore.YELLOW]
 
 # choose a random color for the client
 client_color = random.choice(colors)
@@ -36,12 +35,21 @@ if SERVER_HOST.lower() == 'exit':
   if conf.lower() == 'y':
     exit()
 
-while SERVER_HOST.isdigit() == False:
-  SERVER_HOST = input('Thats not an IP address! Try Again:    ')
-  if SERVER_HOST.lower() == 'exit':
+# ADD IP DETECTOR
+
+key = input('Please enter encryption key! (leave empty if none):    ')
+if key.lower() == 'exit':
     conf = input('Are you sure? [y/n]: ')
     if conf.lower() == 'y':
-      exit()
+        exit()
+if key != '':
+    with open('key.key', 'w') as f:
+        f.truncate(0)
+        f.write(key)
+    with open('key.key', 'r+') as e:
+        filekey = e.read()
+    fernet = Fernet(filekey)
+
 # server's IP address
 # if the server is not on this machine,
 # put the private (network) IP address (e.g 192.168.1.2)
@@ -65,7 +73,24 @@ if name.lower() == 'exit':
 def listen_for_messages():
     while True:
         message = s.recv(1024).decode()
-        print(message)
+
+        if key != '':
+            msglist = message.split("'")
+            print(msglist)
+            message = msglist[1]
+            with open('rcvmsg.txt', 'w') as f:
+                f.truncate(0)
+                f.write(message)
+            with open('rcvmsg.txt', 'rb') as e:
+                message = e.read()
+            fernet = Fernet(filekey)
+            messagepr = fernet.decrypt(message)
+            one = str(msglist[0]).replace('b', '')
+            two = str(messagepr).replace('b', '')
+            consmsg = one + two.replace("'", "") + str(msglist[2])
+            print( consmsg)
+        if key == '':
+            print(message)
 
 # make a thread that listens for messages to this client & print them
 t = Thread(target=listen_for_messages)
@@ -76,19 +101,30 @@ t.start()
 
 while True:
     # input message we want to send to the server
-    to_send =  input()
+    to_send = input()
     if to_send.lower() == 'exit':
       conf = input('Are you sure? [y/n]: ')
       if conf.lower() == 'y':
         exit()
+    if key != '':
+        with open('msg.txt', 'w') as f:
+            f.truncate(0)
+            f.write(to_send)
+        with open('msg.txt', 'rb') as e:
+            to_send = e.read()
+        msg = fernet.encrypt(to_send)
+    if key =='':
+        msg = to_send
+
     print ("\033[A                             \033[A")
 
     # a way to exit the program
     if to_send.lower() == 'q':
         break
+
     # add the datetime, name & the color of the sender
     date_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    to_send = f"{client_color}[{date_now}] {name}{separator_token}{to_send}{Fore.RESET}"
+    to_send = f"{client_color}[{date_now}] {name}{separator_token}{msg}{Fore.RESET}"
     # finally, send the message
     s.send(to_send.encode())
 

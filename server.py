@@ -2,6 +2,8 @@ import socket, os, time
 from threading import Thread
 from datetime import datetime
 
+os.system('clear')
+
 now = datetime.now()
 
 nl = '''
