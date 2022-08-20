@@ -1,7 +1,5 @@
 # CLI Chatter
 
-# CLI Chatter
-
 CLI Chatter is a Python3 based chat software designed for simple use between 10 people *(or less)*.
 
 ## Installation ⚙️
